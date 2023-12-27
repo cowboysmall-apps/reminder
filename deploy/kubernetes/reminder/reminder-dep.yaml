@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  labels:
+    io.reminder.service: reminder
+  name: reminder
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.reminder.service: reminder
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        io.reminder.network/postgres-network: "true"
+        io.reminder.service: reminder
+    spec:
+      containers:
+        - env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: dev
+            - name: JDBC_DATABASE_URL
+              value: jdbc:postgresql://postgres:5432/reminder
+            - name: JDBC_DATABASE_USERNAME
+              value: reminder
+            - name: JDBC_DATABASE_PASSWORD
+              value: reminder
+            - name: SMTP_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: smtp-secret
+                  key: SMTP_HOST
+            - name: SMTP_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: smtp-secret
+                  key: SMTP_PORT
+            - name: SMTP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: smtp-secret
+                  key: SMTP_USERNAME
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: smtp-secret
+                  key: SMTP_PASSWORD
+
+          image: cowboysmall/reminder-server:latest
+          imagePullPolicy: Never
+          name: reminder
+          ports:
+            - containerPort: 8080
+          resources: {}
+      restartPolicy: Always
+
+status: {}

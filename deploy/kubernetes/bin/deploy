@@ -1,0 +1,10 @@
+#!/bin/bash
+
+kubectl apply -f "$(dirname "$0")"/../postgres/postgres-net.yaml
+kubectl apply -f "$(dirname "$0")"/../postgres/postgres-pvc.yaml
+kubectl apply -f "$(dirname "$0")"/../postgres/postgres-dep.yaml
+kubectl apply -f "$(dirname "$0")"/../postgres/postgres-svc.yaml
+
+
+kubectl apply -f "$(dirname "$0")"/../reminder/reminder-dep.yaml
+kubectl apply -f "$(dirname "$0")"/../reminder/reminder-svc.yaml

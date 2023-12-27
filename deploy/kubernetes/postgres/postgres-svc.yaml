@@ -1,0 +1,19 @@
+apiVersion: v1
+
+kind: Service
+
+metadata:
+  labels:
+    io.reminder.service: postgres
+  name: postgres
+
+spec:
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    io.reminder.service: postgres
+
+status:
+  loadBalancer: {}

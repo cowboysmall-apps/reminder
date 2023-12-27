@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=reminder
+      - POSTGRES_PASSWORD=reminder
+    networks:
+      - postgres-network
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: always
+
+  reminder:
+    image: cowboysmall/reminder-server:latest
+    ports:
+      - 8080:8080
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - JDBC_DATABASE_URL=jdbc:postgresql://postgres:5432/reminder
+      - JDBC_DATABASE_USERNAME=reminder
+      - JDBC_DATABASE_PASSWORD=reminder
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+    networks:
+      - postgres-network
+    restart: always
+    depends_on:
+      - postgres
+
+
+networks:
+  postgres-network:
+    driver: bridge
+
+
+volumes:
+  postgres-data:
+    driver: local
+

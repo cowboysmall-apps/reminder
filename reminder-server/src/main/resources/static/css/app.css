@@ -1,0 +1,14 @@
+
+.nav-pills > li > a, .nav-pills > li > a:hover {
+    background-color: var(--bs-gray-200);
+}
+
+.jumbotron {
+    background-color: var(--bs-gray-200);
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 730px;
+    }
+}
