@@ -99,7 +99,7 @@ public class ReminderServiceImpl implements ReminderService {
 
         try {
 
-            reminderDomainService.findOneOffRemindersInNeighbourhood().stream()
+            reminderDomainService.findOneOffRemindersInNeighbourhood()
                     .map(reminderIntegrationService::sendReminder)
                     .forEach(reminderDomainService::deleteReminder);
 
