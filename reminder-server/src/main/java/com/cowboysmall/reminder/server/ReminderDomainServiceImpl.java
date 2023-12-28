@@ -5,6 +5,7 @@ import com.cowboysmall.insight.Traceable;
 import com.cowboysmall.reminder.domain.Reminder;
 import com.cowboysmall.reminder.domain.ReminderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -39,7 +40,7 @@ public class ReminderDomainServiceImpl implements ReminderDomainService {
 
     @Override
     @Traceable(Level.INFO)
-    public List<Reminder> findRecurringRemindersInNeighbourhood() {
+    public Streamable<Reminder> findRecurringRemindersInNeighbourhood() {
 
         Instant now = Instant.now();
 
@@ -51,7 +52,7 @@ public class ReminderDomainServiceImpl implements ReminderDomainService {
 
     @Override
     @Traceable(Level.INFO)
-    public List<Reminder> findOneOffRemindersInNeighbourhood() {
+    public Streamable<Reminder> findOneOffRemindersInNeighbourhood() {
 
         Instant now = Instant.now();
 
