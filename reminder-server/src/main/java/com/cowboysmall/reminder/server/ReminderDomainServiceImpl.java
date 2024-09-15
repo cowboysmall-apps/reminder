@@ -42,25 +42,39 @@ public class ReminderDomainServiceImpl implements ReminderDomainService {
     @Traceable(Level.INFO)
     public Streamable<Reminder> findRecurringRemindersInNeighbourhood() {
 
-        Instant now = Instant.now();
+        try {
 
-        return reminderRepository.findByEnabledTrueAndOneOffFalseAndTimeBetween(
-                Date.from(now.minus(1, ChronoUnit.MINUTES)),
-                Date.from(now.plus(4, ChronoUnit.MINUTES))
-        );
+            Instant now = Instant.now();
+
+            return reminderRepository.findByEnabledTrueAndOneOffFalseAndTimeBetween(
+                    Date.from(now.minus(1, ChronoUnit.MINUTES)),
+                    Date.from(now.plus(4, ChronoUnit.MINUTES))
+            );
+
+        } catch (Exception e) {
+
+            throw new ReminderDomainServiceException(e);
+        }
     }
 
     @Override
     @Traceable(Level.INFO)
     public Streamable<Reminder> findOneOffRemindersInNeighbourhood() {
 
-        Instant now = Instant.now();
+        try {
 
-        return reminderRepository.findByEnabledTrueAndOneOffTrueAndDateAndTimeBetween(
-                Date.from(now),
-                Date.from(now.minus(1, ChronoUnit.MINUTES)),
-                Date.from(now.plus(4, ChronoUnit.MINUTES))
-        );
+            Instant now = Instant.now();
+
+            return reminderRepository.findByEnabledTrueAndOneOffTrueAndDateAndTimeBetween(
+                    Date.from(now),
+                    Date.from(now.minus(1, ChronoUnit.MINUTES)),
+                    Date.from(now.plus(4, ChronoUnit.MINUTES))
+            );
+
+        } catch (Exception e) {
+
+            throw new ReminderDomainServiceException(e);
+        }
     }
 
     @Override
