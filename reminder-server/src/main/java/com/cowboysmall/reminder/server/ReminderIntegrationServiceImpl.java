@@ -9,17 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class ReminderIntegrationServiceImpl implements ReminderIntegrationService {
-
-    private static final String CONFIRM_TEMPLATE = "confirm.ftl";
-    private static final String REMINDER_TEMPLATE = "reminder.ftl";
-
-    private static final String SERVER_KEY = "server";
-    private static final String TOKEN_KEY = "token";
-    private static final String MESSAGE_KEY = "message";
 
     @Autowired
     private ReminderTemplateComponent reminderTemplateComponent;
@@ -49,14 +43,15 @@ public class ReminderIntegrationServiceImpl implements ReminderIntegrationServic
 
         try {
 
+            Map<String, String> model = new HashMap<>();
+            model.put("server", server);
+            model.put("token", reminder.getToken());
+
             reminderEmailConnector.sendEmail(
                     reminder.getEmail(),
                     from,
                     subjectConfirmation,
-                    reminderTemplateComponent.processTemplate(
-                            CONFIRM_TEMPLATE,
-                            Map.of(SERVER_KEY, server, TOKEN_KEY, reminder.getToken())
-                    )
+                    reminderTemplateComponent.processTemplate("confirm.ftl", model)
             );
 
             return reminder;
@@ -73,14 +68,15 @@ public class ReminderIntegrationServiceImpl implements ReminderIntegrationServic
 
         try {
 
+            Map<String, String> model = new HashMap<>();
+            model.put("message", reminder.getMessage());
+            model.put("token", reminder.getToken());
+
             reminderEmailConnector.sendEmail(
                     reminder.getEmail(),
                     from,
                     subjectReminder,
-                    reminderTemplateComponent.processTemplate(
-                            REMINDER_TEMPLATE,
-                            Map.of(MESSAGE_KEY, reminder.getMessage())
-                    )
+                    reminderTemplateComponent.processTemplate("reminder.ftl", model)
             );
 
             return reminder;

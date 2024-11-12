@@ -1,17 +1,20 @@
 package com.cowboysmall.reminder.server;
 
 import com.cowboysmall.reminder.domain.Reminder;
-import org.springframework.data.util.Streamable;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
 public interface ReminderDomainService {
 
-    Reminder findById(Long id);
+    Optional<Reminder> findById(Long id);
 
-    Reminder findByEnabledFalseAndToken(String token);
+    Optional<Reminder> findByEnabledFalseAndToken(String token);
 
-    Streamable<Reminder> findRecurringRemindersInNeighbourhood();
+    List<Reminder> findRecurringRemindersInNeighbourhood(Instant instant);
 
-    Streamable<Reminder> findOneOffRemindersInNeighbourhood();
+    List<Reminder> findOneOffRemindersInNeighbourhood(Instant instant);
 
     Reminder saveReminder(Reminder reminder);
 

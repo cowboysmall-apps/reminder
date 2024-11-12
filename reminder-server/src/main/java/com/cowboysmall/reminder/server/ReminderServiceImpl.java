@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.util.Optional;
+
 @Service
 @Transactional
 public class ReminderServiceImpl implements ReminderService {
@@ -24,14 +27,8 @@ public class ReminderServiceImpl implements ReminderService {
     @Traceable(Level.INFO)
     public Reminder findReminder(Long id) {
 
-        try {
-
-            return reminderDomainService.findById(id);
-
-        } catch (Exception e) {
-
-            throw new ReminderServiceException(e);
-        }
+        return reminderDomainService.findById(id)
+                .orElseThrow(() -> new ReminderServiceException("reminder not found"));
     }
 
     @Override
@@ -40,8 +37,9 @@ public class ReminderServiceImpl implements ReminderService {
 
         try {
 
-            Reminder prepared = reminderIntegrationService.sendConfirm(reminder.prepare());
-            return reminderDomainService.saveReminder(prepared);
+            Reminder prepared = reminder.prepare();
+            Reminder confirmed = reminderIntegrationService.sendConfirm(prepared);
+            return reminderDomainService.saveReminder(confirmed);
 
         } catch (Exception e) {
 
@@ -53,15 +51,10 @@ public class ReminderServiceImpl implements ReminderService {
     @Traceable(Level.INFO)
     public void confirmReminder(String token) {
 
-        try {
-
-            Reminder found = reminderDomainService.findByEnabledFalseAndToken(token);
-            reminderDomainService.saveReminder(found.confirm());
-
-        } catch (Exception e) {
-
-            throw new ReminderServiceException(e);
-        }
+        reminderDomainService.findByEnabledFalseAndToken(token)
+                .map(Reminder::confirm)
+                .map(reminderDomainService::saveReminder)
+                .orElseThrow(() -> new ReminderServiceException("reminder not found"));
     }
 
     @Override
@@ -84,7 +77,7 @@ public class ReminderServiceImpl implements ReminderService {
 
         try {
 
-            reminderDomainService.findRecurringRemindersInNeighbourhood()
+            reminderDomainService.findRecurringRemindersInNeighbourhood(Instant.now())
                     .forEach(reminderIntegrationService::sendReminder);
 
         } catch (Exception e) {
@@ -99,7 +92,7 @@ public class ReminderServiceImpl implements ReminderService {
 
         try {
 
-            reminderDomainService.findOneOffRemindersInNeighbourhood()
+            reminderDomainService.findOneOffRemindersInNeighbourhood(Instant.now()).stream()
                     .map(reminderIntegrationService::sendReminder)
                     .forEach(reminderDomainService::deleteReminder);
 

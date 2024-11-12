@@ -43,8 +43,14 @@ To run the app execute the following command:
 
 ```
 
-Once running, the application can be accessed by opening a browser 
-[here](http://localhost:8080)
+depending on your version of docker compose you may need to specify 
+the .env file explicitly:
+
+```
+
+> docker compose --env-file .env -f deploy/docker/docker-compose.yml up
+
+```
 
 
 
@@ -72,7 +78,8 @@ after which you build the same as above:
 ``` 
 
 which will build and deploy the image into the cluster Docker 
-registry. 
+registry. The application can be accessed by opening a browser 
+[here](http://localhost:8080)
 
 
 

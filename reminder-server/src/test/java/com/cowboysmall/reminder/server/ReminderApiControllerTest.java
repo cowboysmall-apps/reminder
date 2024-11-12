@@ -19,8 +19,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ReminderRestController.class)
-public class ReminderRestControllerTest {
+@WebMvcTest(ReminderApiController.class)
+public class ReminderApiControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

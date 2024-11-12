@@ -3,11 +3,11 @@ package com.cowboysmall.reminder.domain;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.util.Streamable;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -48,9 +48,9 @@ public class ReminderRepositoryTest {
         reminderRepository.save(createReminder(date, Boolean.FALSE, Boolean.TRUE, UUID.randomUUID().toString()));
         reminderRepository.save(createReminder(date, Boolean.FALSE, Boolean.FALSE, UUID.randomUUID().toString()));
 
-        Streamable<Reminder> found = reminderRepository.findByEnabledTrueAndOneOffTrueAndDateAndTimeBetween(date, start, end);
+        List<Reminder> found = reminderRepository.findByEnabledTrueAndOneOffTrueAndDateAndTimeBetween(date, start, end);
 
-        assertThat(found.toList().size(), is(1));
+        assertThat(found.size(), is(1));
     }
 
     @Test
@@ -68,9 +68,9 @@ public class ReminderRepositoryTest {
         reminderRepository.save(createReminder(date, Boolean.TRUE, Boolean.TRUE, UUID.randomUUID().toString()));
         reminderRepository.save(createReminder(date, Boolean.TRUE, Boolean.FALSE, UUID.randomUUID().toString()));
 
-        Streamable<Reminder> found = reminderRepository.findByEnabledTrueAndOneOffFalseAndTimeBetween(start, end);
+        List<Reminder> found = reminderRepository.findByEnabledTrueAndOneOffFalseAndTimeBetween(start, end);
 
-        assertThat(found.toList().size(), is(1));
+        assertThat(found.size(), is(1));
     }
 
     @Test

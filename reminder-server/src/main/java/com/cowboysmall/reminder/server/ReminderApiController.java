@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/reminder")
-public class ReminderRestController {
+public class ReminderApiController {
 
     @Autowired
     private ReminderService reminderService;
