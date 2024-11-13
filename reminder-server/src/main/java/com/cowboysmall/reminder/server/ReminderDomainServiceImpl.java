@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 
 @Service
 public class ReminderDomainServiceImpl implements ReminderDomainService {
@@ -24,41 +23,57 @@ public class ReminderDomainServiceImpl implements ReminderDomainService {
 
     @Override
     @Traceable(Level.INFO)
-    public Optional<Reminder> findById(Long id) {
+    public Reminder findById(Long id) {
 
-        return reminderRepository.findById(id);
+        return reminderRepository.findById(id)
+                .orElseThrow(() -> new ReminderDomainServiceException("not found"));
     }
 
     @Override
     @Traceable(Level.INFO)
-    public Optional<Reminder> findByEnabledFalseAndToken(String token) {
+    public Reminder findByEnabledFalseAndToken(String token) {
 
-        return reminderRepository.findByEnabledFalseAndToken(token);
+        return reminderRepository.findByEnabledFalseAndToken(token)
+                .orElseThrow(() -> new ReminderDomainServiceException("not found"));
     }
 
     @Override
     @Traceable(Level.INFO)
     public Streamable<Reminder> findRecurringRemindersInNeighbourhood() {
 
-        Instant now = Instant.now();
+        try {
 
-        return reminderRepository.findByEnabledTrueAndOneOffFalseAndTimeBetween(
-                Date.from(now.minus(1, ChronoUnit.MINUTES)),
-                Date.from(now.plus(4, ChronoUnit.MINUTES))
-        );
+            Instant now = Instant.now();
+
+            return reminderRepository.findByEnabledTrueAndOneOffFalseAndTimeBetween(
+                    Date.from(now.minus(1, ChronoUnit.MINUTES)),
+                    Date.from(now.plus(4, ChronoUnit.MINUTES))
+            );
+
+        } catch (Exception e) {
+
+            throw new ReminderDomainServiceException(e);
+        }
     }
 
     @Override
     @Traceable(Level.INFO)
     public Streamable<Reminder> findOneOffRemindersInNeighbourhood() {
 
-        Instant now = Instant.now();
+        try {
 
-        return reminderRepository.findByEnabledTrueAndOneOffTrueAndDateAndTimeBetween(
-                Date.from(now),
-                Date.from(now.minus(1, ChronoUnit.MINUTES)),
-                Date.from(now.plus(4, ChronoUnit.MINUTES))
-        );
+            Instant now = Instant.now();
+
+            return reminderRepository.findByEnabledTrueAndOneOffTrueAndDateAndTimeBetween(
+                    Date.from(now),
+                    Date.from(now.minus(1, ChronoUnit.MINUTES)),
+                    Date.from(now.plus(4, ChronoUnit.MINUTES))
+            );
+
+        } catch (Exception e) {
+
+            throw new ReminderDomainServiceException(e);
+        }
     }
 
     @Override

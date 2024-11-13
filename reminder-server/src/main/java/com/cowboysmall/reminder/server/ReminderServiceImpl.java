@@ -24,8 +24,14 @@ public class ReminderServiceImpl implements ReminderService {
     @Traceable(Level.INFO)
     public Reminder findReminder(Long id) {
 
-        return reminderDomainService.findById(id)
-                .orElseThrow(() -> new ReminderServiceException("reminder not found"));
+        try {
+
+            return reminderDomainService.findById(id);
+
+        } catch (Exception e) {
+
+            throw new ReminderServiceException(e);
+        }
     }
 
     @Override
@@ -48,10 +54,15 @@ public class ReminderServiceImpl implements ReminderService {
     @Traceable(Level.INFO)
     public void confirmReminder(String token) {
 
-        reminderDomainService.findByEnabledFalseAndToken(token)
-                .map(Reminder::confirm)
-                .map(reminderDomainService::saveReminder)
-                .orElseThrow(() -> new ReminderServiceException("reminder not found"));
+        try {
+
+            Reminder found = reminderDomainService.findByEnabledFalseAndToken(token);
+            reminderDomainService.saveReminder(found.confirm());
+
+        } catch (Exception e) {
+
+            throw new ReminderServiceException(e);
+        }
     }
 
     @Override
