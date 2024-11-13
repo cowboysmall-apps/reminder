@@ -5,12 +5,12 @@ import com.cowboysmall.insight.Traceable;
 import com.cowboysmall.reminder.domain.Reminder;
 import com.cowboysmall.reminder.domain.ReminderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,22 +38,26 @@ public class ReminderDomainServiceImpl implements ReminderDomainService {
 
     @Override
     @Traceable(Level.INFO)
-    public List<Reminder> findRecurringRemindersInNeighbourhood(Instant instant) {
+    public Streamable<Reminder> findRecurringRemindersInNeighbourhood() {
+
+        Instant now = Instant.now();
 
         return reminderRepository.findByEnabledTrueAndOneOffFalseAndTimeBetween(
-                Date.from(instant.minus(1, ChronoUnit.MINUTES)),
-                Date.from(instant.plus(4, ChronoUnit.MINUTES))
+                Date.from(now.minus(1, ChronoUnit.MINUTES)),
+                Date.from(now.plus(4, ChronoUnit.MINUTES))
         );
     }
 
     @Override
     @Traceable(Level.INFO)
-    public List<Reminder> findOneOffRemindersInNeighbourhood(Instant instant) {
+    public Streamable<Reminder> findOneOffRemindersInNeighbourhood() {
+
+        Instant now = Instant.now();
 
         return reminderRepository.findByEnabledTrueAndOneOffTrueAndDateAndTimeBetween(
-                Date.from(instant),
-                Date.from(instant.minus(1, ChronoUnit.MINUTES)),
-                Date.from(instant.plus(4, ChronoUnit.MINUTES))
+                Date.from(now),
+                Date.from(now.minus(1, ChronoUnit.MINUTES)),
+                Date.from(now.plus(4, ChronoUnit.MINUTES))
         );
     }
 

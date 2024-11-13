@@ -7,9 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.util.Optional;
-
 @Service
 @Transactional
 public class ReminderServiceImpl implements ReminderService {
@@ -77,7 +74,7 @@ public class ReminderServiceImpl implements ReminderService {
 
         try {
 
-            reminderDomainService.findRecurringRemindersInNeighbourhood(Instant.now())
+            reminderDomainService.findRecurringRemindersInNeighbourhood()
                     .forEach(reminderIntegrationService::sendReminder);
 
         } catch (Exception e) {
@@ -92,7 +89,7 @@ public class ReminderServiceImpl implements ReminderService {
 
         try {
 
-            reminderDomainService.findOneOffRemindersInNeighbourhood(Instant.now()).stream()
+            reminderDomainService.findOneOffRemindersInNeighbourhood()
                     .map(reminderIntegrationService::sendReminder)
                     .forEach(reminderDomainService::deleteReminder);
 

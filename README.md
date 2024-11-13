@@ -52,6 +52,9 @@ the .env file explicitly:
 
 ```
 
+Once running, the application can be accessed by opening a browser 
+[here](http://localhost:8080)
+
 
 
 ## Minikube
